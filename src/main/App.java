@@ -9,5 +9,6 @@ public class App
         var x = new HashMap<Integer, Integer>();
         x.put(2, 2);
         System.out.println(x.get(2));
+        System.out.println(x.containsKey(2));
     }
 }

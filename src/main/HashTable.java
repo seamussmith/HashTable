@@ -1,12 +1,10 @@
 package main;
 
-import java.util.AbstractMap;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.stream.IntStream;
 
-public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
-{
+public class HashTable<TKey, TValue>
+{ 
     final int TABLE_SIZE = 37;
     LinkedList<HashPair>[] table;
     public HashTable()
@@ -21,7 +19,6 @@ public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
     {
         return Math.abs(o.hashCode()) % table.length;
     }
-    @Override
     public TValue put(TKey key, TValue value)
     {
         var hash = hashFunc(key);
@@ -32,7 +29,6 @@ public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
             find.value = value;
         return find.value;
     }
-    @Override
     public TValue get(Object key)
     {
         var hash = hashFunc(key);
@@ -57,10 +53,5 @@ public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
             var x = (TKey)obj;
             return (TKey)key == x;
         }
-    }
-    @Override
-    public Set entrySet() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }
