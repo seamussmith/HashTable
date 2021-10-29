@@ -1,9 +1,13 @@
 package main;
 
+import java.util.HashMap;
+
 public class App
 {
     public static void main(String[] args) 
     {
-        System.out.println("Hello, World!");
+        var x = new HashMap<Integer, Integer>();
+        x.put(2, 2);
+        System.out.println(x.get(2));
     }
 }
