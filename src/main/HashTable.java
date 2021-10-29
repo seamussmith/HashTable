@@ -3,17 +3,18 @@ package main;
 import java.util.LinkedList;
 import java.util.stream.IntStream;
 
+class KeyNotFoundException extends RuntimeException {}
+
 public class HashTable<TKey, TValue>
 { 
     final int TABLE_SIZE = 37;
-    LinkedList<HashPair>[] table;
+    LinkedList<HashPair>[] table = new LinkedList[TABLE_SIZE];
     public HashTable()
     {
-        // G O D
-        table = (LinkedList<HashPair>[])IntStream
-                .rangeClosed(0, 37)
-                .mapToObj(x -> new LinkedList<HashPair>())
-                .toArray();
+        for (int i = 0; i < TABLE_SIZE; ++i)
+        {
+            table[i] = new LinkedList<>();
+        }
     }
     int hashFunc(Object o)
     {
@@ -24,16 +25,18 @@ public class HashTable<TKey, TValue>
         var hash = hashFunc(key);
         var find = table[hash].stream().dropWhile(x -> !x.key.equals(key)).findFirst().orElse(null);
         if (find == null)
+        {
             table[hash].addLast(new HashPair(key, value));
+            return value;
+        }
         else
-            find.value = value;
-        return find.value;
+            return find.value = value;
     }
     public TValue get(Object key)
     {
         var hash = hashFunc(key);
         var find = table[hash].stream().dropWhile(x -> !x.key.equals(key)).findFirst();
-        find.orElseThrow(() -> new IndexOutOfBoundsException());
+        find.orElseThrow(() -> new KeyNotFoundException());
         
         return find.get().value;
 
@@ -46,12 +49,6 @@ public class HashTable<TKey, TValue>
         {
             this.key = key;
             this.value = val;
-        }
-        @Override
-        public boolean equals(Object obj)
-        {
-            var x = (TKey)obj;
-            return (TKey)key == x;
         }
     }
 }
