@@ -3,23 +3,26 @@ package main;
 import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.IntStream;
 
-public class HashTable<TKey, TValue> extends AbstractMap
+public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
 {
-    LinkedList<HashPair>[] table = new LinkedList[37];
+    final int TABLE_SIZE = 37;
+    LinkedList<HashPair>[] table;
     public HashTable()
     {
-        for (int i = 0; i < table.length; ++i)
-        {
-            table[i] = new LinkedList<HashPair>();
-        }
+        // G O D
+        table = (LinkedList<HashPair>[])IntStream
+                .rangeClosed(0, 37)
+                .mapToObj(x -> new LinkedList<HashPair>())
+                .toArray();
     }
     int hashFunc(Object o)
     {
         return Math.abs(o.hashCode()) % table.length;
     }
     @Override
-    public Object put(Object key, Object value)
+    public TValue put(TKey key, TValue value)
     {
         var hash = hashFunc(key);
         var find = table[hash].stream().dropWhile(x -> !x.key.equals(key)).findFirst().orElse(null);
@@ -27,22 +30,23 @@ public class HashTable<TKey, TValue> extends AbstractMap
             table[hash].addLast(new HashPair(key, value));
         else
             find.value = value;
-        return find;
+        return find.value;
     }
     @Override
-    public Object get(Object key)
+    public TValue get(Object key)
     {
         var hash = hashFunc(key);
         var find = table[hash].stream().dropWhile(x -> !x.key.equals(key)).findFirst();
-
-        return find.orElseThrow(() -> new IndexOutOfBoundsException());
+        find.orElseThrow(() -> new IndexOutOfBoundsException());
+        
+        return find.get().value;
 
     }
     public class HashPair
     {
-        Object key;
-        Object value;
-        HashPair(Object key, Object val)
+        TKey key;
+        TValue value;
+        HashPair(TKey key, TValue val)
         {
             this.key = key;
             this.value = val;
