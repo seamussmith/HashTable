@@ -1,11 +1,13 @@
 package main;
 
+import java.util.AbstractMap;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.stream.IntStream;
+import java.util.Set;
 
 class KeyNotFoundException extends RuntimeException {}
 
-public class HashTable<TKey, TValue>
+public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
 { 
     final int TABLE_SIZE = 37;
     LinkedList<HashPair>[] table = new LinkedList[TABLE_SIZE];
@@ -26,11 +28,13 @@ public class HashTable<TKey, TValue>
         var find = table[hash].stream().dropWhile(x -> !x.key.equals(key)).findFirst().orElse(null);
         if (find == null)
         {
-            table[hash].addLast(new HashPair(key, value));
+            table[hash].addFirst(new HashPair(key, value));
             return value;
         }
         else
+        {
             return find.value = value;
+        }
     }
     public TValue get(Object key)
     {
@@ -41,7 +45,7 @@ public class HashTable<TKey, TValue>
         return find.get().value;
 
     }
-    public class HashPair
+    public class HashPair implements Entry<TKey, TValue>
     {
         TKey key;
         TValue value;
@@ -50,5 +54,33 @@ public class HashTable<TKey, TValue>
             this.key = key;
             this.value = val;
         }
+        @Override
+        public TKey getKey()
+        {
+            return key;
+        }
+        @Override
+        public TValue getValue()
+        {
+            return value;
+        }
+        @Override
+        public TValue setValue(TValue value)
+        {
+            this.value = value;
+            return value;
+        }
+        @Override
+        public int hashCode() {
+            return key.hashCode();
+        }
+    }
+    @Override
+    public Set<Entry<TKey, TValue>> entrySet() {
+        var entrySet = new HashSet<Entry<TKey, TValue>>();
+        for (var i : table)
+        for (var j : i)
+            entrySet.add(j);
+        return entrySet();
     }
 }
