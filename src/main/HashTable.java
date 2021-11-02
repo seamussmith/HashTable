@@ -2,12 +2,14 @@ package main;
 
 import java.util.AbstractMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
 class KeyNotFoundException extends RuntimeException {}
 
-public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
+public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue> implements Iterable<TValue>
 { 
     final int TABLE_SIZE = 37;
     LinkedList<HashPair>[] table = new LinkedList[TABLE_SIZE];
@@ -75,6 +77,7 @@ public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
             return key.hashCode();
         }
     }
+    
     @Override
     public Set<Entry<TKey, TValue>> entrySet() {
         var entrySet = new HashSet<Entry<TKey, TValue>>();
@@ -83,4 +86,9 @@ public class HashTable<TKey, TValue> extends AbstractMap<TKey, TValue>
             entrySet.add(j);
         return entrySet();
     }
+    @Override
+    public Iterator<TValue> iterator() {
+        return entrySet().stream().map(x -> x.getValue()).iterator();
+    }
+
 }
